@@ -1,8 +1,9 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
-
-from .models import Post, Group, User
+from users.forms import PostForm
+from .models import Post, Group,User
 
 
 def index(request):
@@ -49,10 +50,40 @@ def post_detail(request,post_id):
     }
     return render(request, 'posts/post_detail.html', context)
 
-
+@login_required
 def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, files=request.FILES or None)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user    
+            post.save()
+            return redirect('posts:profile', request.user.username)
+
     form = PostForm()
     context = {
         'form': form,
+        'is_edit' : False,
+    }
+    return render(request, 'posts/create_post.html', context)
+
+
+@login_required
+def post_edit(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    form = PostForm(instance=post)
+    if request.user != post.author:
+        return redirect('posts:post_detail', post_id)
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('posts:post_detail', post_id)
+
+    context = {
+        'form': form,
+        'is_edit' : True,
+        'post' : post,
     }
     return render(request, 'post/create_post.html', context)
+
