@@ -65,6 +65,7 @@ def post_create(request):
         'form': form,
         'is_edit' : False,
     }
+
     return render(request, 'posts/create_post.html', context)
 
 
@@ -86,4 +87,3 @@ def post_edit(request, post_id):
         'post' : post,
     }
     return render(request, 'post/create_post.html', context)
-
