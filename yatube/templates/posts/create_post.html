@@ -2,19 +2,19 @@
 {% block title %}
  Новый пост
 {% endblock %}
-{% load user_filters %}
 {%block content%}
+{% load user_filters %}
 <div class="row justify-content-center">
   <div class="col-md-8 p-5">
     <div class="card">
       <div class="card-header">Новый пост</div>
       <div class="card-body">  
            {% if is_edit %}
-        <form method="post" action="{% url 'posts:update' post.id %}">
+        <form action="{% url 'posts:edit' post_id %}" method="post" >
            {% else %} 
           <form method="post" action="{% url 'posts:create'  %}">
            {%endif%}
-           {% csrf_token %}            
+           {% csrf_token %}
            <div class="form-group row my-3 p-3">
             <label for="id_text">
              Текст поста  <span class="required text-danger" >*</span>                  
@@ -22,9 +22,9 @@
             {{ form.text }}               
             <small id="id_text-help" class="form-text text-muted">
              Текст нового поста
-            </small>                  
-           </div>       
+            </small>  
 
+           </div>       
            <div class="form-group row my-3 p-3">
             {{ form.group }} 
             <small id="id_group-help" class="form-text text-muted">
@@ -43,7 +43,6 @@
             {% if post.group %}   
             <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
             {% endif %} 
-          </form>
         </form>
       </div>
     </div>

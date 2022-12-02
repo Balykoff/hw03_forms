@@ -65,7 +65,6 @@ def post_create(request):
         'form': form,
         'is_edit' : False,
     }
-
     return render(request, 'posts/create_post.html', context)
 
 
@@ -74,9 +73,10 @@ def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = PostForm(instance=post)
     if request.user != post.author:
-        return redirect('posts:post_detail', post_id)
+        return redirect('posts:post_detail' , post_id)
+
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST,instance=post)
         if form.is_valid():
             form.save()
             return redirect('posts:post_detail', post_id)
@@ -84,6 +84,6 @@ def post_edit(request, post_id):
     context = {
         'form': form,
         'is_edit' : True,
-        'post' : post,
+        'title' : 'Редактировать пост'
     }
-    return render(request, 'post/create_post.html', context)
+    return render(request, 'posts/create_post.html', context)
