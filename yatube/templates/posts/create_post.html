@@ -7,10 +7,16 @@
 <div class="row justify-content-center">
   <div class="col-md-8 p-5">
     <div class="card">
-      <div class="card-header">Новый пост</div>
+      <div class="card-header">
+        {% if is_edit %}       
+            Редактировать пост
+        {% else %}
+            Новый пост
+        {% endif %}   
+      </div>
       <div class="card-body">  
            {% if is_edit %}
-        <form action="{% url 'posts:edit' post_id %}" method="post" >
+        <form action="{% url 'posts:edit' id=post.id %}" method="post" >
            {% else %} 
           <form method="post" action="{% url 'posts:create'  %}">
            {%endif%}
@@ -49,4 +55,3 @@
   </div>
 </div>
 {%endblock%}
-
