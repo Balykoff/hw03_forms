@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
-{% block title %}
+{%extends 'base.html'%}
+{%block title%}
  Новый пост
 {% endblock %}
 {%block content%}
-{% load user_filters %}
+{%load user_filters%}
 <div class="row justify-content-center">
   <div class="col-md-8 p-5">
     <div class="card">
@@ -47,7 +47,7 @@
             </button>
            </div>
             {% if post.group %}   
-            <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+            <a href="{% url 'posts:group_list' post.group.slug %}">Все записи группы</a>
             {% endif %} 
         </form>
       </div>
