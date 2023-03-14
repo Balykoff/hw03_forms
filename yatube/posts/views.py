@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from users.forms import PostForm
-from .models import Post, Group,User
+from .models import Post, Group, User
 
 
 def index(request):
@@ -37,13 +37,13 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
-        'author' : author,
+        'author': author,
         'page_obj': page_obj,
     }
-    return render(request,'posts/profile.html',context)
+    return render(request, 'posts/profile.html', context)
 
 
-def post_detail(request,post_id):
+def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     context = {
         'post': post,
@@ -80,9 +80,9 @@ def post_edit(request, post_id):
     if request.user != post.author:
         return redirect('posts:post_detail', post_id)
     if request.method == 'POST':
-        form = PostForm(request.POST,instance=post)
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
             return redirect('posts:post_detail', post_id)
-        return render(request,template, context)
+        return render(request, template, context)
     return render(request, template, context)
