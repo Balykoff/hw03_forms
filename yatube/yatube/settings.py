@@ -3,7 +3,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'su%#yt=k__9x7&42$gf-!k4pqrm#x+4si+ur+gvz)gx*cenl@)'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver'
+]
 POSTS_PER_PAGE = 10
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
