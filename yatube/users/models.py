@@ -5,7 +5,7 @@ User = get_user_model
 
 
 class Creation(models.Model):
-   first_name = models.TextField()
-   last_name = models.TextField()
-   username = models.TextField()
-   email = models.EmailField()
+    first_name = models.TextField()
+    last_name = models.TextField()
+    username = models.TextField()
+    email = models.EmailField()
