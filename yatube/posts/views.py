@@ -71,7 +71,7 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
-    template = 'posts/create_post.html'
+    template = 'posts/update_post.html'
     post = get_object_or_404(Post, id=post_id)
     form = PostForm(request.POST or None, instance=post)
     context = {

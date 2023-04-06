@@ -35,7 +35,7 @@
       <p>
       {{ post.text|linebreaksbr }} 
       </p>
-      <a class="btn btn-primary" href="/posts/post_detail.html">
+      <a class="btn btn-primary" href="{% url 'posts:edit' post_id=post.id %}">
         Редактировать запись
       </a>   
     </article>
