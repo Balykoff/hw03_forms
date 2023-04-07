@@ -3,11 +3,15 @@ from django.contrib.auth import get_user_model
 from pytils.translit import slugify
 
 
+
 User = get_user_model()
 
 
 class Post(models.Model):
-    text = models.TextField()
+    text = models.TextField(
+        verbose_name="Текст поста",
+        help_text="Введите текст поста"
+    )
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         User,
@@ -34,3 +38,8 @@ class Group(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)[:15]
+            super().save(*args, **kwargs)

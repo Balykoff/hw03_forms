@@ -18,9 +18,10 @@
           <p> 
             {{post.text}}
           </p> 
+          {%if user.is_authenticated%} 
           <a href="{% url 'posts:post_detail' post.id %}">
             Подробная информация
-          </a>
+          </a> {%endif%}
           {% if post.group %}   
             <br>
           <a href="{% url 'posts:group_list' post.group.slug %}">
