@@ -29,6 +29,6 @@ class GroupTest(TestCase):
             slug='Тестовый слаг',
             description='Тестовое описание'
         )
-    
+
     def test_group(self):
         self.assertEqual(self.group.title, "Тестовая группа")
