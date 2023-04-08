@@ -14,7 +14,8 @@
                 {% endif %}             
               </div>
               <div class="card-body">   
-                <form method="post" action="../posts/create_post.html">
+                <form method="post" action="{% url 'posts:edit' post_id=post_id %}">
+                  {% csrf_token %}
                   <input type="hidden" name="csrfmiddlewaretoken" value="">            
                   <div class="form-group row my-3 p-3">
                     <label for="id_text">
@@ -34,6 +35,7 @@
                   </div>
                   <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">
+                      {% csrf_token %}
                       {% if is_edit %}
                         Сохранить
                       {% else %}
