@@ -2,13 +2,14 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from users.forms import PostForm
+from posts.forms import PostForm
 from .models import Post, Group, User
+from yatube.settings import POSTS_PER_PAGE
 
 
 def index(request):
     post_list = Post.objects.all()
-    paginator = Paginator(post_list, 10)
+    paginator = Paginator(post_list, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -54,7 +55,7 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST, files=request.FILES or None)
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -74,17 +75,15 @@ def post_edit(request, post_id):
     template = 'posts/update_post.html'
     post = get_object_or_404(Post, id=post_id)
     form = PostForm(request.POST or None, instance=post)
+    if request.user != post.author:
+        return redirect('posts:post_detail', post_id)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('posts:post_detail', post_id)
     context = {
         'form': form,
         'is_edit': True,
         'post_id': post_id
     }
-    if request.user != post.author:
-        return redirect('posts:post_detail', post_id)
-    if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('posts:post_detail', post_id)
-        return render(request, template, context)
     return render(request, template, context)
