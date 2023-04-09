@@ -7,40 +7,41 @@ from .models import Post, Group, User
 from yatube.settings import POSTS_PER_PAGE
 
 
-def index(request):
-    post_list = Post.objects.all()
-    paginator = Paginator(post_list, POSTS_PER_PAGE)
+def get_page_numbres(queryset, request):
+    paginator = Paginator(queryset, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {
+    return {
+        'paginator': paginator,
+        'page_number': page_number,
         'page_obj': page_obj,
     }
+
+
+def index(request):
+    context = get_page_numbres(Post.objects.all(), request)
     return render(request, 'posts/index.html', context)
 
 
 def group_list(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    post_list = group.posts.all()
-    paginator = Paginator(post_list, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    posts = group.posts.all()[POSTS_PER_PAGE]
     context = {
         'group': group,
-        'page_obj': page_obj,
+        'posts': posts,
     }
+    context.update(get_page_numbres(group.posts.all()), request)
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'author': author,
-        'page_obj': page_obj,
+        'posts': posts,
     }
+    context.update(get_page_numbres(author.posts.all()), request)
     return render(request, 'posts/profile.html', context)
 
 
