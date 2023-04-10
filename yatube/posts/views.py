@@ -3,34 +3,31 @@ from django.contrib.auth.decorators import login_required
 
 from posts.forms import PostForm
 from .models import Post, Group, User
-from .utils import get_page_numbres
-from yatube.settings import POSTS_PER_PAGE
+from .utils import get_page_numbers
 
 
 def index(request):
-    context = get_page_numbres(Post.objects.all(), request)
+    context = get_page_numbers(Post.objects.all(), request)
     return render(request, 'posts/index.html', context)
 
 
 def group_list(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()[POSTS_PER_PAGE]
+    posts = group.posts.all()
     context = {
         'group': group,
         'posts': posts,
     }
-    context.update(get_page_numbres(group.posts.all()), request)
+    context.update(get_page_numbers(group.posts.all(), request))
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    posts = author.posts.all()
     context = {
         'author': author,
-        'posts': posts,
     }
-    context.update(get_page_numbres(author.posts.all()), request)
+    context.update(get_page_numbers(author.posts.all()), request)
     return render(request, 'posts/profile.html', context)
 
 
