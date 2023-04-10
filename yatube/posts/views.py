@@ -18,16 +18,18 @@ def group_list(request, slug):
         'group': group,
         'posts': posts,
     }
-    context.update(get_page_numbers(group.posts.all(), request))
+    context.update(get_page_numbers(posts, request))
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
+    posts = author.posts.all()
     context = {
         'author': author,
+        'posts': posts,
     }
-    context.update(get_page_numbers(author.posts.all()), request)
+    context.update(get_page_numbers(posts, request))
     return render(request, 'posts/profile.html', context)
 
 
