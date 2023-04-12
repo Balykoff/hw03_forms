@@ -1,6 +1,10 @@
 {%extends 'base.html'%}
 {%block title%}
+{% if is_edit %}
+ Редактировать пост
+{% else %}
  Новый пост
+{% endif %}
 {% endblock %}
 {%block content%}
 {%load user_filters%}
@@ -16,7 +20,7 @@
       </div>
       <div class="card-body">  
            {% if is_edit %}
-        <form action="{% url 'posts:edit' id=post.id %}" method="post" >
+        <form action="{% url 'posts:edit' post.id %}" method="post" >
            {% else %} 
           <form method="post" action="{% url 'posts:create'  %}">
            {%endif%}
