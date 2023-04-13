@@ -16,7 +16,6 @@ def group_list(request, slug):
     posts = group.posts.all()
     context = {
         'group': group,
-        'posts': posts,
     }
     context.update(get_page_numbers(posts, request))
     return render(request, 'posts/group_list.html', context)
@@ -27,7 +26,6 @@ def profile(request, username):
     posts = author.posts.all()
     context = {
         'author': author,
-        'posts': posts,
     }
     context.update(get_page_numbers(posts, request))
     return render(request, 'posts/profile.html', context)
@@ -62,9 +60,9 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    form = PostForm(request.POST or None, instance=post)
     if request.user != post.author:
         return redirect('posts:post_detail', post_id)
+    form = PostForm(request.POST or None, instance=post)
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -72,7 +70,6 @@ def post_edit(request, post_id):
     context = {
         'form': form,
         'is_edit': True,
-        'post_id': post_id,
-        'post': post,
+        'post': post
     }
     return render(request, 'posts/create_post.html', context)
