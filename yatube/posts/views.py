@@ -7,17 +7,21 @@ from .utils import get_page_numbers
 
 
 def index(request):
-    context = get_page_numbers(Post.objects.all(), request)
+    page_obj = get_page_numbers(Post.objects.all(), request)
+    context = {
+        'page_obj': page_obj
+    }
     return render(request, 'posts/index.html', context)
 
 
 def group_list(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()
+    page_obj = get_page_numbers(Post.objects.all(), request)
     context = {
         'group': group,
+        'page_obj': page_obj
     }
-    context.update(get_page_numbers(posts, request))
+
     return render(request, 'posts/group_list.html', context)
 
 
