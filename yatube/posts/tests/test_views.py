@@ -40,7 +40,7 @@ class Test(TestCase):
                                            slug="test_group3")
         self.user3 = User.objects.create_user(username="NonAuthUser3")
         Post.objects.create(
-            text=f"Третье задание группа 3 юзер 3",
+            text=f"Третье задание группа {3} юзер {3}",
             group=self.group3, author=self.user3
         )
 
