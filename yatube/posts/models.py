@@ -37,7 +37,7 @@ class Group(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     def __save__(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)[:15]
