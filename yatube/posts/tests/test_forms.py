@@ -1,7 +1,7 @@
 import shutil
 import tempfile
 
-from posts.forms import PostCreateForm
+from posts.forms import PostForm
 from posts.models import Post
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -11,16 +11,15 @@ from django.urls import reverse
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
-class PostCreateFormTests(TestCase):
+class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         Post.objects.create(
             title='Тестовый заголовок',
             text='Тестовый текст',
-            group='Тестовая группа'
         )
-        cls.form = PostCreateForm()
+        cls.form = PostForm()
 
     @classmethod
     def tearDownClass(cls):
@@ -80,6 +79,6 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertFormError(
             response,
-            'form'
+            'form',
         )
         self.assertEqual(response.status_code, 200)
