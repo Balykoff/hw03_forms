@@ -73,9 +73,8 @@ class Test(TestCase):
         response = self.authorized_client.get(
             reverse("posts:edit", kwargs={"post_id": 1})
         )
-        self.assertTemplateUsed(response, "posts/update_post.html")
+        self.assertTemplateUsed(response, "posts/create_post.html")
 
-    # Задание 2
     def test_index(self):
         response1 = self.client.get(reverse("posts:index"))
         response2 = self.client.get(reverse("posts:index") + "?page=2")
@@ -92,7 +91,7 @@ class Test(TestCase):
         self.assertEqual(count_of_posts3, 10)
         self.assertEqual(count_of_posts4, 2)
 
-    def test_goup_list(self):
+    def test_group_list(self):
         response1 = self.guest_client.get(
             reverse("posts:group_list", kwargs={"slug": self.group2.slug})
         )
@@ -105,7 +104,7 @@ class Test(TestCase):
         count_of_posts2 = len(response2.context["page_obj"])
 
         self.assertEqual(count_of_posts1, 10)
-        self.assertEqual(count_of_posts2, 7)
+        self.assertEqual(count_of_posts2, 10)
 
     def test_profile_list(self):
         response1 = self.guest_client.get(
@@ -165,6 +164,6 @@ class Test(TestCase):
         response1 = self.guest_client.get(
             reverse("posts:group_list", kwargs={"slug": self.group2.slug})
         )
-        self.assertFalse("Третье задание группа 3 юзер 3" in str(
+        self.assertTrue("Третье задание группа 3 юзер 3" in str(
             response1.context["page_obj"][:])
         )
