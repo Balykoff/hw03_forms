@@ -7,7 +7,7 @@ from ..models import Post, Group
 User = get_user_model()
 
 
-class Test(TestCase):
+class PostURLTest(TestCase):
     def setUp(self):
         self.guest_client = Client()
         self.user = User.objects.create_user(username="NonAuthUser")
