@@ -1,84 +1,61 @@
-import shutil
-import tempfile
-
-from posts.forms import PostForm
-from posts.models import Post
-from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import TestCase
+from django.test import Client
+from django.contrib.auth import get_user_model
 from django.urls import reverse
+from posts.models import Group, Post
 
-TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+User = get_user_model()
 
 
-class PostFormTests(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        Post.objects.create(
-            title='Тестовый заголовок',
-            text='Тестовый текст',
-        )
-        cls.form = PostForm()
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-
+class PostFormTest(TestCase):
     def setUp(self):
+        """
+        Установка первоначальных данных в бд для тестирования
+        """
+        # Создаем неавторизованный клиент
         self.guest_client = Client()
+        # Создаем авторизованный клиент
+        self.user = User.objects.create_user(username="HasNoName")
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
 
-    def test_create_post(self):
-        posts_count = Post.objects.count()
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
-        uploaded = SimpleUploadedFile(
-            name='small.gif',
-            content=small_gif,
-            content_type='img/gif'
-        )
-        form_data = {
-            'title': 'Тестовый заголовок',
-            'text': 'Тестовый тест',
-            'image': uploaded,
-        }
-        response = self.guest_client.post(
-            reverse('posts:creat_post'),
-            data=form_data,
-            follow=True
+        # Cоздаём пост с id 99 для второго задания
+        self.group4 = Group.objects.create(title="Тестовая группа4",
+                                           slug="test_group4")
+        Post.objects.create(
+            id=99,
+            text="Второе задание по формам",
+            group=self.group4,
+            author=self.user
         )
 
-        self.assertRedirects(response, reverse('posts:post_edit'))
-        self.assertEqual(Post.objects.count(), posts_count + 1)
+    def test_post_create(self):
+        """
+        Проверка, что создаётся запись в бд при создании поста
+        """
+        self.authorized_client.post(
+            reverse("posts:create"),
+            {"text": "Test form first evere created"}
+        )
+
         self.assertTrue(
             Post.objects.filter(
-                text='Тестовый текст',
-                image='posts/small.gif',
+                text="Test form first evere created",
             ).exists()
         )
 
-    def test_cant_create(self):
-        posts_count = Post.objects.count()
-        form_data = {
-            'title': 'Заголовок из формы',
-            'text': 'Текст из формы'
-        }
-        response = self.guest_client.post(
-            reverse('posts:post_edit'),
-            data=form_data,
-            follow=True
+    def test_post_edit(self):
+        """
+        Проверка, что пост в базе обновляется
+        """
+        self.authorized_client.post(
+            reverse("posts:edit", kwargs={"post_id": 99}),
+            {"text": "Update post"}
         )
 
-        self.assertEqual(Post.objects.count(), posts_count)
-        self.assertFormError(
-            response,
-            'form',
+        self.assertTrue(
+            Post.objects.filter(
+                id=99,
+                text="Update post",
+            ).exists()
         )
-        self.assertEqual(response.status_code, 200)
